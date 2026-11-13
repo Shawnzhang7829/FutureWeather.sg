@@ -1,0 +1,123 @@
+{
+  "title": "Future weather.sg",
+  "n_subzones": 332,
+  "scenarios": [
+    {
+      "key": "hist_1995_2014",
+      "period": "1995-2014",
+      "ssp": "historical",
+      "y0": 1995,
+      "y1": 2014
+    },
+    {
+      "key": "mid_2040_2059_ssp126",
+      "period": "2040-2059",
+      "ssp": "ssp126",
+      "y0": 2040,
+      "y1": 2059
+    },
+    {
+      "key": "mid_2040_2059_ssp245",
+      "period": "2040-2059",
+      "ssp": "ssp245",
+      "y0": 2040,
+      "y1": 2059
+    },
+    {
+      "key": "mid_2040_2059_ssp585",
+      "period": "2040-2059",
+      "ssp": "ssp585",
+      "y0": 2040,
+      "y1": 2059
+    },
+    {
+      "key": "end_2080_2099_ssp126",
+      "period": "2080-2099",
+      "ssp": "ssp126",
+      "y0": 2080,
+      "y1": 2099
+    },
+    {
+      "key": "end_2080_2099_ssp245",
+      "period": "2080-2099",
+      "ssp": "ssp245",
+      "y0": 2080,
+      "y1": 2099
+    },
+    {
+      "key": "end_2080_2099_ssp585",
+      "period": "2080-2099",
+      "ssp": "ssp585",
+      "y0": 2080,
+      "y1": 2099
+    }
+  ],
+  "valid_year_ranges": [
+    [
+      1995,
+      2014
+    ],
+    [
+      2040,
+      2059
+    ],
+    [
+      2080,
+      2099
+    ]
+  ],
+  "year_min": 1995,
+  "year_max": 2099,
+  "categories": {
+    "utc": 233,
+    "tree_taller": 36,
+    "crown_shrunk": 22,
+    "tree_shortened": 19,
+    "no_building": 15,
+    "crown_overshrunk": 7
+  },
+  "colormaps": {
+    "temp": {
+      "vmin": 27.1,
+      "vmax": 33.1,
+      "cmap": "inferno",
+      "unit": "°C"
+    },
+    "wind": {
+      "vmin": 1.82,
+      "vmax": 5.63,
+      "cmap": "YlGnBu",
+      "unit": "m/s"
+    },
+    "hot": {
+      "vmin": 0,
+      "vmax": 1421,
+      "cmap": "YlOrRd",
+      "unit": "h/yr"
+    },
+    "warm": {
+      "vmin": 2700,
+      "vmax": 4380,
+      "cmap": "RdPu",
+      "unit": "h/yr",
+      "threshold": 26.3,
+      "night": "19:00-07:00"
+    }
+  },
+  "paths": {
+    "epw": "/FutureWeather.sg-data/epw/{id}/{id}_{scenario}.bin",
+    "npz16": "/FutureWeather.sg-data/npz16/{id}__{scenario}.npz",
+    "downscale_ref": "data/downscale_ref.json",
+    "canyon": "figures/canyon_abstraction/{id}.png",
+    "step2": "figures/step2_maps/{id}.png",
+    "step3": "figures/step3_diurnal_7scen/{id}.png",
+    "flow_image": "figures/Picture1.jpg",
+    "category_map": "figures/subzone_category_map.png"
+  },
+  "epw_cols": {
+    "Tdb": 6,
+    "RH": 8,
+    "GHI": 13,
+    "Wspd": 21
+  }
+}

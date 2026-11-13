@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Future weather.sg — Singapore subzone climate</title>
+<link rel="icon" href="assets/logo.svg" />
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<!-- ============ Header ============ -->
+<header id="topbar">
+  <div class="brand">
+    <img src="assets/logo.svg" alt="logo" class="logo" />
+    <div class="brand-text">
+      <div class="brand-title">Future weather.sg</div>
+      <div class="brand-sub" data-i18n="brand_sub">Singapore climate projections and forecasts by subzone</div>
+    </div>
+  </div>
+  <!-- data tabs (user 2026-10-18): long-term projection (MSS -> UT&C downscaled climate) / short-term forecast (WeatherNext V3) -->
+  <div class="app-mode" id="app-mode">
+    <button data-am="lt" class="active" data-i18n="am_lt" data-i18n-tip="am_lt_tip">长期预测</button>
+    <button data-am="st" data-i18n="am_st" data-i18n-tip="am_st_tip">短期预报</button>
+  </div>
+  <div class="top-actions">
+    <button id="btn-measure" class="btn ghost btn-measure" data-i18n-tip="ms_tip"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" d="M3 16.5 16.5 3l4.5 4.5L7.5 21zM7 12.5l2 2M10 9.5l2 2M13 6.5l2 2"/></svg> <span data-i18n="ms_btn">测距</span></button>
+    <button id="btn-help" class="btn ghost" data-i18n="help_btn">说明</button>
+    <select id="basemap-select" class="bm-select" title="basemap"></select>
+    <div class="lang-toggle" id="lang-toggle">
+      <button data-lang="zh" class="active">中</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<div id="layout">
+  <!-- ============ Left control canvas ============ -->
+  <aside id="sidebar">
+
+    <!-- ===== short-term forecast (WeatherNext V3, js/forecast.js) ===== -->
+    <section class="panel st-only" id="wn-panel">
+      <div class="panel-head">
+        <h3><span class="src-brand">WeatherNext V3</span> <span data-i18n="wn_title">短期预报</span></h3>
+        <label class="fill-switch" data-i18n-tip="wn_gridline_tip">
+          <span class="fs-label" data-i18n="wn_gridline">网格</span>
+          <input type="checkbox" id="wn-gridline" />
+          <span class="fs-track"><span class="fs-knob"></span></span>
+        </label>
+      </div>
+      <div class="wn-row"><label data-i18n="wn_grid">网格分辨率</label><select id="wn-grid" class="full"></select></div>
+      <div class="wn-row"><label data-i18n="wn_var">变量</label><select id="wn-var" class="full"></select></div>
+      <div class="wn-row"><label data-i18n="wn_stat">统计量</label><select id="wn-stat" class="full"></select></div>
+      <div class="hint" id="wn-stat-note"></div>
+      <label class="check wn-auto" data-i18n-tip="wn_fill_tip"><input type="checkbox" id="wn-fill" checked /> <span data-i18n="wn_fill">填充色</span></label>
+      <label class="check wn-auto" data-i18n-tip="wn_auto_tip"><input type="checkbox" id="wn-auto" checked /> <span data-i18n="wn_auto">色标随时刻自适应</span></label>
+      <label class="check wn-auto" id="wn-st-main-row" data-i18n-tip="wn_st_main_tip"><input type="checkbox" id="wn-st-main" /> <span data-i18n="cmp_show_st">MSS 气象站</span></label>
+      <div class="hint wn-st-note" id="wn-st-note"></div>
+      <label class="check wn-auto" data-i18n-tip="cmp_tip"><input type="checkbox" id="wn-cmp" /> <span data-i18n="cmp_label">对比实况（卷帘）</span></label>
+      <div class="wn-obs hidden" id="wn-obs">
+        <label class="check wn-auto" data-i18n-tip="cmp_show_era_tip"><input type="checkbox" id="wn-show-era" checked /> <span data-i18n="cmp_show_era">再分析（ERA5 / ERA5-Land）</span></label>
+        <div class="wn-row hidden" id="wn-era-row" data-i18n-tip="cmp_era_tip"><label data-i18n="cmp_era">实况再分析</label><select id="wn-era" class="full"></select></div>
+      </div>
+      <div class="hint wn-info" id="wn-info"></div>
+    </section>
+
+    <!-- Display mode -->
+    <section class="panel lt-only">
+      <div class="panel-head">
+        <h3><span class="src-brand">MSS V3</span> <span data-i18n="mode_title">downscaled data</span></h3>
+        <label class="fill-switch">
+          <span class="fs-label" data-i18n="fill_label">着色</span>
+          <input type="checkbox" id="fill-toggle" checked />
+          <span class="fs-track"><span class="fs-knob"></span></span>
+        </label>
+      </div>
+      <div class="seg" id="mode-seg">
+        <button data-mode="temp_wind" class="active" data-i18n="mode_tw">月均温/风</button>
+        <button data-mode="hot_hours" data-i18n="mode_hot">高温小时</button>
+        <button data-mode="warm_nights" data-i18n="mode_warm">暖夜</button>
+      </div>
+      <!-- variable: only for mode 1 (app.js shows/hides every .mode-ctrl by data-for) -->
+      <div class="row mode-ctrl elem-row" data-for="temp_wind">
+        <label data-i18n="element">显示要素</label>
+        <div class="seg sm" id="elem-seg">
+          <button data-elem="temp" class="active" data-i18n="elem_temp">气温</button>
+          <button data-elem="wind" data-i18n="elem_wind">风速</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MSS V3 before downscaling: the 2 km grid + the forcing EPW each subzone was given (js/mssraw.js, user 2026-10-19) -->
+    <section class="panel lt-only" id="mr-panel">
+      <div class="panel-head">
+        <h3><span class="src-brand">MSS V3</span> <span data-i18n="mr_title">raw data（降尺度前）</span></h3>
+        <label class="fill-switch" data-i18n-tip="mr_on_tip">
+          <span class="fs-label" data-i18n="fill_label">着色</span>
+          <input type="checkbox" id="mr-toggle" />
+          <span class="fs-track"><span class="fs-knob"></span></span>
+        </label>
+      </div>
+      <div class="seg sm" id="mr-unit">
+        <button data-u="grid" class="active" data-i18n="mr_u_grid">2 km 网格</button>
+        <button data-u="zone" data-i18n="mr_u_zone">分区（强迫 EPW）</button>
+      </div>
+      <div class="wn-row" id="mr-var-row"><label data-i18n="mr_var">要素</label><select id="mr-var" class="full"></select></div>
+      <div class="wn-row" id="mr-yr-row">
+        <label data-i18n="mr_yr">年份</label>
+        <div class="seg sm" id="mr-yr">
+          <button data-y="year" class="active" data-i18n="mr_yr_sel">所选年份</button>
+          <button data-y="avg" data-i18n="mr_yr_avg">20 年平均</button>
+        </div>
+      </div>
+      <label class="check wn-auto" id="mr-auto-row" data-i18n-tip="mr_auto_tip"><input type="checkbox" id="mr-auto" checked /> <span data-i18n="mr_auto">色标随月份自适应</span></label>
+      <label class="check wn-auto" id="mr-ol-zone-row" data-i18n-tip="mr_ol_zone_tip"><input type="checkbox" id="mr-ol-zone" checked /> <span data-i18n="mr_ol_zone">显示分区轮廓</span></label>
+      <label class="check wn-auto hidden" id="mr-ol-grid-row" data-i18n-tip="mr_ol_grid_tip"><input type="checkbox" id="mr-ol-grid" checked /> <span data-i18n="mr_ol_grid">显示 2 km 网格轮廓</span></label>
+      <div class="hint" id="mr-hint"></div>
+    </section>
+
+    <!-- Scenario: below the display mode on this site (UBEM.sg has it above; user 2026-10-08) -->
+    <section class="panel lt-only">
+      <h3 data-i18n="scenario_title">场景 Scenario</h3>
+      <select id="scenario-select" class="full"></select>
+      <div class="hint" id="scenario-hint"></div>
+      <button id="btn-compare" class="btn ghost full sc-cmp-btn" data-i18n="compare_btn">多情景对比</button>
+    </section>
+
+    <!-- Year + month in one box; the month block is mode-1 only (.mode-ctrl) -->
+    <section class="panel lt-only">
+      <h3><span data-i18n="year_title">年份</span> <span id="year-val">2050</span></h3>
+      <input type="range" id="year-slider" min="1995" max="2099" value="2050" step="1" />
+      <div class="year-ticks">
+        <span>1995</span><span>2014</span><span>2040</span><span>2059</span><span>2080</span><span>2099</span>
+      </div>
+      <div class="hint" id="year-hint" data-i18n="year_hint">仅 1995–2014 / 2040–2059 / 2080–2099 有数据</div>
+      <div class="month-block mode-ctrl" data-for="temp_wind">
+        <h3><span data-i18n="month">月份</span> <span id="month-val">Jun</span></h3>
+        <input type="range" id="month-slider" min="1" max="12" value="6" step="1" />
+        <div class="month-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+      </div>
+    </section>
+
+    <!-- Jurong (the category filter moved to the tabs of Subzone selection & download, user 2026-10-10) -->
+    <section class="panel lt-only">
+      <label class="check"><input type="checkbox" id="jurong-toggle" /> <span data-i18n="jurong">仅 Jurong Gateway 范围</span></label>
+      <!-- with "Jurong Gateway only" on: outline the subzones outside it too (user 2026-10-21) -->
+      <label class="check jg-others hidden" id="jg-others-row" data-i18n-tip="jg_others_tip"><input type="checkbox" id="jg-others" /> <span data-i18n="jg_others">显示范围外分区边界</span></label>
+      <!-- adds every subzone of Jurong Gateway (in_jurong: >=5% of its area inside) to the selection (user 2026-10-21) -->
+      <button id="btn-sel-jurong" class="btn ghost sm jg-sel">选取范围内全部分区</button>
+    </section>
+
+    <!-- Subzone selection / download -->
+    <section class="panel lt-only">
+      <h3 data-i18n="subzone_title">Subzone 选择与下载</h3>
+      <button id="btn-cat-fill" class="btn ghost sm cat-fill-btn">按类型着色显示 subzone</button>
+      <div class="sz-cat-tabs" id="sz-cat-tabs"></div>
+      <input type="text" id="subzone-search" class="full" data-i18n-ph="search_ph" placeholder="搜索 subzone…" />
+      <div class="hint sz-search-hint" id="subzone-search-hint"></div>
+      <div id="subzone-list" class="subzone-list"></div>
+      <div class="dl-actions">
+        <button id="btn-dl-selected" class="btn primary" data-i18n="dl_selected">下载所选 EPW</button>
+        <button id="btn-sel-cat" class="btn ghost sm">选取本类</button>
+        <button id="btn-clear-sel" class="btn ghost sm" data-i18n="clear">清空</button>
+      </div>
+      <div class="hint" id="dl-hint"></div>
+    </section>
+
+    <!-- download everything (moved from the top bar, user 2026-10-18) -->
+    <section class="panel lt-only">
+      <button id="btn-dl-all" class="btn ghost full" data-i18n="dl_all_btn">下载全部 EPW</button>
+      <div class="hint" data-i18n="dl_all_hint">全部 332 subzone × 7 场景的 EPW 压缩包</div>
+    </section>
+  </aside>
+
+  <!-- ============ Right map ============ -->
+  <main id="map-wrap">
+    <div id="map"></div>
+    <div id="legend" class="legend lt-only"></div>
+    <div id="wn-legend" class="legend st-only"></div>
+    <!-- forecast vs observed swipe (js/forecast.js): divider, side labels, "no ERA5 yet" note -->
+    <div id="wn-swipe" class="wn-swipe st-only hidden"><span class="wn-swipe-h" data-i18n-tip="cmp_handle_tip">⇆</span></div>
+    <div id="wn-sw-l" class="wn-sw-badge l st-only hidden"></div>
+    <div id="wn-sw-r" class="wn-sw-badge r st-only hidden"></div>
+    <div id="wn-sw-msg" class="wn-sw-msg st-only hidden"></div>
+    <!-- hourly time bar of the forecast window (short-term forecast) -->
+    <div id="wn-timebar" class="wn-timebar st-only">
+      <button class="wn-play" id="wn-play" title="play">▶</button>
+      <div class="wn-tb-main">
+        <div class="wn-tb-top">
+          <button class="wn-step" id="wn-prev">‹ 1h</button>
+          <b id="wn-time" class="wn-time-btn" tabindex="0" data-i18n-tip="wn_time_tip">—</b>
+          <input type="datetime-local" id="wn-time-in" class="wn-time-in hidden" step="3600" />
+          <button class="wn-step" id="wn-next">1h ›</button>
+          <span class="wn-when" id="wn-when"></span>
+          <span class="wn-speed" id="wn-speed" data-i18n-tip="wn_speed_tip"><button data-s="1" class="active">1×</button><button data-s="2">2×</button><button data-s="4">4×</button></span>
+        </div>
+        <input type="range" id="wn-slider" min="0" max="359" step="1" value="0" />
+        <div class="wn-ticks" id="wn-ticks"></div>
+        <div class="wn-init" id="wn-init"></div>
+      </div>
+      <button class="wn-now" id="wn-now" data-i18n-tip="wn_now_tip">⟲</button>
+    </div>
+    <div id="map-tooltip" class="map-tooltip hidden"></div>
+    <div id="map-loading" class="map-loading" data-i18n="loading">加载中…</div>
+  </main>
+</div>
+
+<!-- ============ Floating charts window ============ -->
+<div id="charts-float" class="floatwin hidden">
+  <div class="fw-head" id="charts-fw-head">
+    <span class="fw-title" data-i18n="charts_title">逐时气候曲线</span>
+    <button class="fw-close" id="charts-fw-close" title="close">×</button>
+  </div>
+  <div class="fw-body">
+    <div class="hint" id="charts-sub" data-i18n="charts_hint">点击地图或列表选择一个 subzone</div>
+    <div id="chart-diurnal" class="chart"></div>
+    <div id="chart-annual" class="chart hidden"></div>
+    <div id="chart-heatwave" class="chart hidden"></div>
+    <div id="chart-warmnight" class="chart hidden"></div>
+  </div>
+</div>
+
+<!-- ============ Modal: flow image ============ -->
+
+<!-- ============ Modal: subzone detail ============ -->
+<div class="modal hidden" id="modal-subzone">
+  <div class="modal-box wide">
+    <button class="modal-close" data-close>×</button>
+    <h2 id="sz-title">Subzone</h2>
+    <div id="sz-meta" class="sz-meta"></div>
+
+    <div class="sz-tabs">
+      <button data-tab="download" class="active" data-i18n="tab_download">EPW 下载</button>
+      <button data-tab="figures" data-i18n="tab_figures">形态与降尺度图</button>
+    </div>
+
+    <div class="sz-tabpane" data-pane="download">
+      <div id="sz-dl-grid" class="dl-grid"></div>
+    </div>
+
+    <div class="sz-tabpane hidden" data-pane="figures">
+      <div class="fig-group">
+        <h4 data-i18n="fig_canyon">2D 街谷形态</h4>
+        <img class="fig zoomable" data-fig="canyon" />
+      </div>
+      <div class="fig-group">
+        <h4 data-i18n="fig_step2">真实街区形态</h4>
+        <img class="fig zoomable" data-fig="step2" />
+      </div>
+      <div class="fig-group full-w">
+        <h4 data-i18n="fig_step3">降尺度前后 ΔT / AH / LE（7 场景）</h4>
+        <div class="hint ds-status" id="sz-ds-status"></div>
+        <div id="sz-ds-chart" class="ds-chart"></div>
+        <img class="fig zoomable hidden" data-fig="step3" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Modal: multi-year compare ============ -->
+<div class="modal hidden" id="modal-compare">
+  <div class="modal-box cmp">
+    <button class="modal-close" data-close>×</button>
+    <h2 data-i18n="compare_title">多年份地图对比</h2>
+    <div class="cmp-bar-row">
+      <div class="cmp-grp">
+        <label data-i18n="cmp_metric">对比要素</label>
+        <div class="seg sm" id="cmp-metric">
+          <button data-metric="temp" class="active" data-i18n="elem_temp">气温</button>
+          <button data-metric="wind" data-i18n="elem_wind">风速</button>
+          <button data-metric="hot" data-i18n="mode_hot">高温小时</button>
+          <button data-metric="warm" data-i18n="mode_warm">暖夜</button>
+        </div>
+      </div>
+      <div class="cmp-grp" id="cmp-month-row">
+        <label><span data-i18n="month">月份</span> <span id="cmp-month-val">Jun</span></label>
+        <input type="range" id="cmp-month" min="1" max="12" value="6" step="1" />
+      </div>
+      <div class="cmp-grp">
+        <label data-i18n="cmp_panels">面板数</label>
+        <div class="seg sm" id="cmp-count">
+          <button data-n="2">2</button><button data-n="3" class="active">3</button><button data-n="4">4</button>
+        </div>
+      </div>
+    </div>
+    <div id="cmp-grid" class="cmp-grid"></div>
+    <div id="cmp-legend" class="cmp-legend"></div>
+  </div>
+</div>
+
+<!-- ============ Modal: help ============ -->
+<div class="modal hidden" id="modal-help">
+  <div class="modal-box">
+    <button class="modal-close" data-close>×</button>
+    <h2><span data-i18n="help_btn">说明</span> <span id="help-scope" class="help-scope"></span></h2>
+    <div id="help-body" class="help-body"></div>
+  </div>
+</div>
+
+<!-- Lightbox for figure zoom -->
+<div class="lightbox hidden" id="lightbox"><div class="lb-hint" data-i18n="zoom_hint">点击图片放大</div><img id="lightbox-img" /></div>
+
+<!-- ============ Libs ============ -->
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<!-- ============ App ============ -->
+<script src="js/i18n.js"></script>
+<script src="js/colormaps.js"></script>
+<script src="js/epw.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/map.js"></script>
+<script src="js/measure.js"></script>
+<script src="js/download.js"></script>
+<script src="js/downscale_chart.js"></script>
+<script src="js/subzone_modal.js"></script>
+<script src="js/compare.js"></script>
+<script src="js/forecast.js"></script>
+<script src="js/mssraw.js"></script>
+<script src="js/online.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

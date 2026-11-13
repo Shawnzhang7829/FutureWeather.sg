@@ -1,0 +1,416 @@
+:root{
+  --bg:#0f1419; --panel:#171e26; --panel2:#1e2730; --line:#2b3743;
+  --text:#e6edf3; --muted:#8b9bab; --accent:#2dd4bf; --accent2:#fb923c;
+  --primary:#3b82f6; --danger:#ef4444; --radius:10px;
+  --sidebar-w:374px; --header-h:58px;
+  font-synthesis:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+  font-family:"Inter","Segoe UI","Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:14px;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+h3{font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+h4{margin:0 0 8px;font-size:13px;color:var(--text)}
+.hidden{display:none !important}
+
+/* ---------- Header ---------- */
+#topbar{height:var(--header-h);display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;background:linear-gradient(180deg,#192029,#141a21);border-bottom:1px solid var(--line);
+  position:relative;z-index:30}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px}
+.brand-title{font-weight:700;font-size:17px;letter-spacing:.01em}
+.brand-sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.bm-select{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+  padding:7px 9px;border-radius:8px;font-size:12.5px;outline:none;cursor:pointer;max-width:160px}
+.bm-select:hover{border-color:var(--accent)}
+.lang-toggle{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang-toggle button{background:transparent;border:none;color:var(--muted);padding:6px 11px;font-size:13px}
+.lang-toggle button.active{background:var(--accent);color:#04201c;font-weight:700}
+
+.btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+  padding:7px 13px;border-radius:8px;font-size:13px;transition:.15s}
+.btn:hover{border-color:var(--accent);color:#fff}
+.btn.ghost{background:transparent}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+.btn.primary:hover{background:#2f6fe0}
+.btn.sm{padding:5px 9px;font-size:12px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---------- Layout ---------- */
+#layout{display:flex;height:calc(100% - var(--header-h))}
+#sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100%;overflow-y:auto;
+  background:var(--bg);border-right:1px solid var(--line);padding:14px}
+#sidebar::-webkit-scrollbar{width:8px}
+#sidebar::-webkit-scrollbar-thumb{background:#2b3743;border-radius:4px}
+#map-wrap{flex:1;position:relative}
+#map{position:absolute;inset:0}
+
+/* ---------- Panels ---------- */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:13px;margin-bottom:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:9px 0}
+.row label{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.hint{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.5}
+.full{width:100%}
+select,input[type=text]{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+  padding:8px 10px;border-radius:8px;font-size:13px;outline:none}
+select:focus,input[type=text]:focus{border-color:var(--accent)}
+
+/* segmented control */
+.seg{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;background:transparent;border:none;color:var(--muted);padding:8px 6px;font-size:12.5px;transition:.12s}
+.seg button.active{background:var(--accent);color:#04201c;font-weight:700}
+.seg.sm button{padding:6px 8px;font-size:12px}
+
+/* sliders */
+input[type=range]{width:100%;accent-color:var(--accent);margin:6px 0 2px}
+.year-ticks,.month-ticks{display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-top:-2px}
+.row.elem-row{margin:12px 0 0}
+.month-block{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}   /* below the year, same box */
+#month-val,#year-val{color:var(--accent);font-weight:700}
+
+.check{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-bottom:8px}
+.check input{accent-color:var(--accent);width:15px;height:15px}
+
+/* panel header with an inline control (e.g. the fill on/off switch) */
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.panel-head h3{margin:0}
+
+/* green on/off switch — toggles subzone coloring in any mode */
+.fill-switch{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none}
+.fill-switch .fs-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.fill-switch input{position:absolute;opacity:0;width:0;height:0}
+.fill-switch .fs-track{position:relative;width:34px;height:18px;border-radius:20px;
+  background:var(--line);transition:.18s;flex:0 0 auto}
+.fill-switch .fs-knob{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+  background:#fff;transition:.18s}
+.fill-switch input:checked + .fs-track{background:var(--accent)}
+.fill-switch input:checked + .fs-track .fs-knob{transform:translateX(16px)}
+.fill-switch input:focus-visible + .fs-track{box-shadow:0 0 0 2px rgba(45,212,191,.45)}
+
+/* subzone list */
+.subzone-list{max-height:190px;overflow-y:auto;margin:9px 0;border:1px solid var(--line);
+  border-radius:8px;background:var(--panel2)}
+.subzone-list::-webkit-scrollbar{width:7px}
+.subzone-list::-webkit-scrollbar-thumb{background:#33424f;border-radius:4px}
+.sz-item{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12.5px;
+  border-bottom:1px solid #222c35;cursor:pointer}
+.sz-item:hover{background:#222d38}
+.sz-item.sel{background:rgba(45,212,191,.13)}
+.sz-item .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.sz-item .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sz-item .id{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px}
+.dl-actions{display:flex;gap:8px;margin-top:4px}
+.dl-actions .btn{flex:1}
+
+/* charts */
+.charts-panel{padding-bottom:8px}
+.chart{width:100%;height:178px}
+#chart-diurnal{height:384px}
+#chart-annual{height:212px}
+#chart-heatwave{height:270px}
+#chart-warmnight{height:270px}
+/* floating charts window */
+.floatwin{position:fixed;top:76px;right:20px;width:440px;max-height:86vh;z-index:60;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 14px 44px rgba(0,0,0,.55);display:flex;flex-direction:column;
+  overflow:hidden;resize:both;min-width:330px;min-height:240px}
+.floatwin.hidden{display:none}
+.fw-head{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;
+  cursor:move;background:var(--panel2);border-bottom:1px solid var(--line);user-select:none}
+.fw-title{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.fw-close{background:transparent;border:none;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;padding:0 2px}
+.fw-close:hover{color:#fff}
+.fw-body{padding:12px 13px;overflow-y:auto;flex:1}
+.fw-title::before{content:"▾ ";color:var(--accent)}
+.floatwin.collapsed{resize:none;min-height:0;height:auto!important}
+.floatwin.collapsed .fw-body{display:none}
+.floatwin.collapsed .fw-title::before{content:"▸ "}
+
+.side-footer{font-size:10.5px;color:var(--muted);text-align:center;padding:6px 0 2px}
+
+/* ---------- Legend ---------- */
+.legend{position:absolute;left:14px;bottom:16px;background:rgba(20,26,33,.92);
+  border:1px solid var(--line);border-radius:10px;padding:11px 13px;z-index:10;
+  backdrop-filter:blur(6px);min-width:188px}
+.legend .lg-title{font-size:11.5px;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
+.legend .lg-bar{height:11px;border-radius:3px;margin-bottom:4px}
+.legend .lg-scale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* tooltip */
+.map-tooltip{position:absolute;z-index:20;pointer-events:none;background:rgba(15,20,25,.96);
+  border:1px solid var(--accent);border-radius:8px;padding:8px 11px;font-size:12.5px;
+  max-width:230px;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.map-tooltip .tt-name{font-weight:700;margin-bottom:3px}
+.map-tooltip .tt-val{color:var(--accent)}
+.map-tooltip .tt-hint{color:var(--muted);font-size:10.5px;margin-top:4px}
+.map-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:15;
+  color:var(--muted);background:rgba(15,20,25,.85);padding:10px 18px;border-radius:8px}
+
+/* ---------- Modals ---------- */
+.modal{position:fixed;inset:0;background:rgba(5,8,11,.72);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(3px)}
+.modal-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:22px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
+.modal-box.wide{max-width:920px}
+.modal-box h2{margin:0 0 14px;font-size:19px}
+.modal-box img{max-width:100%;border-radius:8px;display:block}
+.modal-close{position:absolute;top:12px;right:14px;background:transparent;border:none;
+  color:var(--muted);font-size:26px;line-height:1}
+.modal-close:hover{color:#fff}
+
+.sz-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.sz-meta .chip{background:var(--panel2);border:1px solid var(--line);border-radius:20px;
+  padding:4px 12px;font-size:12px;color:var(--muted)}
+.sz-meta .chip b{color:var(--text)}
+.sz-meta .chip.cat{border-color:var(--accent);color:var(--accent)}
+
+.sz-tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.sz-tabs button{background:transparent;border:none;border-bottom:2px solid transparent;
+  color:var(--muted);padding:8px 14px;font-size:13.5px}
+.sz-tabs button.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dl-card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.dl-card .sc-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.dl-card .sc-meta{font-size:11px;color:var(--muted);margin-bottom:9px}
+.dl-card .btn{width:100%}
+.dl-allbar{grid-column:1/-1;display:flex;gap:10px;margin-top:2px}
+.dl-allbar .btn{flex:1}
+
+.fig-group{margin-bottom:18px}
+.fig-group.full-w{grid-column:1/-1}
+.fig{width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;cursor:zoom-in}
+.fig-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* live Pre/post ΔT, AH, LE chart (white card, like the static figures next to it) */
+.ds-chart{width:100%;height:640px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.ds-status{margin:-2px 0 8px}
+
+.help-body{font-size:13px;line-height:1.7;color:#cdd9e3}
+.help-body h4{margin:14px 0 4px;color:var(--accent)}
+.help-body code{background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:12px}
+
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
+.lightbox img{max-width:96%;max-height:96%;border-radius:6px;cursor:zoom-in}
+.lightbox.zoom{display:block;text-align:center;padding:0}
+.lightbox.zoom img{max-width:none;max-height:none;width:auto;border-radius:0;cursor:zoom-out;margin:auto;display:block}
+.lightbox .lb-hint{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:201;
+  color:#cbd5e1;font-size:12px;background:rgba(0,0,0,.55);padding:5px 13px;border-radius:14px;pointer-events:none}
+.modal-box.flow{max-width:1400px;width:92vw}
+#flow-img{width:100%;max-height:78vh;object-fit:contain;cursor:zoom-in;background:#fff;border-radius:8px}
+
+/* ---------- Compare modal ---------- */
+.modal-box.cmp{max-width:1180px;width:94vw}
+.cmp-bar-row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.cmp-grp{display:flex;flex-direction:column;gap:5px}
+.cmp-grp>label{font-size:11.5px;color:var(--muted)}
+.cmp-grp .seg{min-width:130px}
+#cmp-month{width:160px}
+#cmp-month-val{color:var(--accent);font-weight:700}
+.cmp-grid{display:grid;gap:12px}
+.cmp-card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px}
+.cmp-ctrls{display:flex;gap:6px;margin-bottom:7px}
+.cmp-ctrls select{flex:1;min-width:0;font-size:12px;padding:5px 6px}
+.cmp-mapwrap{background:#eceef1;border-radius:6px;overflow:hidden;line-height:0}
+.cmp-map{width:100%;height:auto;display:block}
+.cmp-legend{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cmp-legend .cmp-bar{height:11px;width:55%;max-width:380px;border-radius:3px}
+
+/* maplibre attribution tweak */
+.maplibregl-ctrl-attrib{font-size:10px;opacity:.6}
+@media (max-width:880px){
+  #layout{flex-direction:column}
+  #sidebar{width:100%;min-width:0;height:auto;max-height:46%}
+  .dl-grid{grid-template-columns:1fr}
+}
+
+/* delayed hover help (app.js initHoverTips): any [data-tip] element explains itself after 1.5 s */
+.hover-tip{position:fixed;z-index:400;max-width:320px;padding:7px 10px;border-radius:6px;pointer-events:none;
+  background:rgba(15,20,25,.97);color:#e6edf3;border:1px solid #2dd4bf;font-size:11.5px;line-height:1.5;
+  box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.hover-tip.hidden{display:none}
+.hover-tip b{color:#5eead4}
+.tt-row.tt-nods{color:#ff5cff;font-weight:600}
+
+/* subzone-list category help (hover tip) */
+.hover-tip .ct-h{color:#9fb0c0;margin-bottom:2px}
+.hover-tip .ct-g{margin-top:6px}
+.hover-tip .ct-g b{color:#5eead4}
+.hover-tip .ct-r{display:flex;align-items:center;gap:7px;margin:2px 0 0 4px}
+.hover-tip .ct-r i{width:9px;height:9px;border-radius:50%;flex:none}
+.hover-tip .ct-r span{margin-left:auto;padding-left:14px;color:#9fb0c0;font-variant-numeric:tabular-nums}
+.sz-item .dot[data-tip], h3[data-tip-html], #category-select[data-tip-html]{cursor:help}
+/* About: subzone category list */
+.cat-tbl{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0 8px}
+.cat-tbl th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line);padding:4px 6px}
+.cat-tbl td{padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.cat-tbl td i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-top:3px}
+.cat-tbl td.yes{color:#22c55e;font-weight:600;white-space:nowrap}
+.cat-tbl td.no{color:#ff5cff;font-weight:600;white-space:nowrap}
+.cat-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+
+/* subzone category tabs (Subzone selection & download) */
+.sz-cat-tabs{margin:2px 0 8px}
+.sz-tab-g{font-size:10px;color:var(--muted);margin:6px 0 3px}
+.sz-tab-row{display:flex;flex-wrap:wrap;gap:4px}
+.sz-tab{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border:1px solid var(--line);border-radius:12px;
+  background:transparent;color:var(--text);font-size:11px;cursor:pointer;line-height:1.3}
+.sz-tab i{width:8px;height:8px;border-radius:50%;flex:none}
+.sz-tab span{color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
+.sz-tab:hover{border-color:var(--accent)}
+.sz-tab.active{border-color:var(--accent);background:rgba(45,212,191,.16)}
+.sz-tab.active span{color:var(--text)}
+
+/* switch next to "Without downscaled" (category tabs): hide the non-downscaled subzones */
+.sz-tab-gn{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sz-nods-sw{flex:none;transform:scale(.85);transform-origin:right center}
+.sz-tab-row.off .sz-tab{opacity:.35;pointer-events:none}
+
+/* About: 1.5 x the default dialog width (user 2026-10-10) */
+#modal-help .modal-box{max-width:840px}
+
+/* "Hourly climate curves" header: bold subzone name + non-downscaled tag (as UBEM.sg) */
+#charts-sub .cs-name{font-size:14px;font-weight:700;color:var(--text)}
+#charts-sub .cs-id{color:var(--muted);font-size:11px}
+.cl-nods-tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:9px;background:#c026d3;color:#fff;
+  font-size:10.5px;font-weight:600;vertical-align:2px;white-space:nowrap}
+
+/* About: computation workflow diagram (moved from the top-bar "Workflow" button) */
+.help-body .help-flow{display:block;width:100%;height:auto;margin:6px 0 4px;border-radius:6px;cursor:zoom-in;background:#fff}
+.help-body .help-flow-hint{text-align:center;margin-bottom:6px}
+
+/* "Subzone" tag of the curves window (as UBEM.sg): hover / click = highlight on the map, double-click = zoom */
+.cl-kind{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.03em;padding:1px 6px;border-radius:4px;margin-right:7px;
+  vertical-align:2px;cursor:pointer;user-select:none}
+.cl-kind.zone{background:#334155;color:#f8fafc}
+.cl-kind.pinned{box-shadow:0 0 0 2px #2dd4bf, 0 0 8px rgba(45,212,191,.7)}
+
+/* ===== data tabs: long-term projection / short-term forecast (user 2026-10-18) ===== */
+.app-mode{display:flex;gap:4px;padding:4px;margin:0 auto 0 28px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:24px;box-shadow:0 0 0 1px rgba(45,212,191,.12)}
+.app-mode button{border:0;background:transparent;color:var(--muted);font-size:14px;font-weight:700;letter-spacing:.02em;
+  padding:7px 20px;border-radius:20px;cursor:pointer;transition:.15s}
+.app-mode button:hover{color:var(--text)}
+.app-mode button.active{background:var(--accent);color:#0f1419;box-shadow:0 2px 10px rgba(45,212,191,.35)}
+body.am-st .lt-only{display:none!important}
+body:not(.am-st) .st-only{display:none!important}
+/* short-term forecast tab: the logo colour-inverted (red -> purple -> blue, dark lines), top bar unchanged (user 2026-11-14) */
+body.am-st .logo{filter:invert(1)}
+.sc-cmp-btn{margin-top:9px}
+
+/* forecast panel */
+.wn-row{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin:8px 0}
+.wn-row label{font-size:12px;color:var(--muted)}
+.wn-row select{min-width:0}
+.wn-info{margin-top:8px;line-height:1.5}
+#wn-legend .wn-lg-src{color:var(--muted)}
+.legend .lg-note{font-size:10.5px;color:var(--muted);margin-top:5px;max-width:260px}
+
+/* hourly time bar at the bottom of the map (as Google Weather Lab) */
+.wn-timebar{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:min(600px,calc(100% - 300px));min-width:420px;
+  display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(20,26,33,.95);border:1px solid var(--line);
+  border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.4);z-index:12}
+.wn-play,.wn-now{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);
+  color:var(--text);font-size:15px;cursor:pointer}
+.wn-play:hover,.wn-now:hover{border-color:var(--accent);color:var(--accent)}
+.wn-tb-main{flex:1;min-width:0}
+.wn-tb-top{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px}
+.wn-tb-top b{font-size:14px;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.wn-step{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:12px;font-size:11px;padding:2px 8px;cursor:pointer}
+.wn-step:hover{color:var(--text);border-color:var(--accent)}
+.wn-when{font-size:10.5px;color:var(--accent2);min-width:28px}
+#wn-slider{width:100%;margin:2px 0 0;accent-color:var(--accent)}
+.wn-ticks{position:relative;height:14px;font-size:9.5px;color:var(--muted)}
+.wn-ticks span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.wn-nowmark{position:absolute;top:-14px;width:2px;height:12px;margin-left:-1px;background:var(--accent2);border-radius:1px}
+.wn-init{font-size:10.5px;color:var(--muted);text-align:center;margin-top:2px}
+@media (max-width:900px){ .app-mode{margin-left:10px} .app-mode button{padding:6px 12px;font-size:13px}
+  .wn-timebar{width:calc(100% - 24px);min-width:0;bottom:8px} }
+.wn-auto{margin-top:6px;font-size:12px}
+/* playback speed 1x / 2x / 4x */
+.wn-speed{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-left:2px}
+.wn-speed button{border:0;background:transparent;color:var(--muted);font-size:10.5px;padding:2px 7px;cursor:pointer}
+.wn-speed button+button{border-left:1px solid var(--line)}
+.wn-speed button.active{background:var(--accent);color:#0f1419;font-weight:700}
+
+/* forecast vs observed swipe (short-term forecast) */
+#map-r{position:absolute;inset:0;z-index:4}
+.wn-swipe{position:absolute;top:0;bottom:0;width:0;z-index:11;cursor:ew-resize}
+.wn-swipe::before{content:"";position:absolute;top:0;bottom:0;left:-1.5px;width:3px;background:#ffffff;box-shadow:0 0 6px rgba(0,0,0,.45)}
+.wn-swipe::after{content:"";position:absolute;top:0;bottom:0;left:-12px;width:24px}          /* wider grab area */
+.wn-swipe-h{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;
+  background:#ffffff;color:#0f1419;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;
+  box-shadow:0 2px 10px rgba(0,0,0,.4);z-index:1}
+.wn-sw-badge{position:absolute;top:12px;z-index:11;background:rgba(20,26,33,.9);border:1px solid var(--line);border-radius:12px;
+  padding:4px 10px;font-size:11.5px;color:var(--text);white-space:nowrap;pointer-events:none}
+.wn-sw-badge b{color:var(--accent)}
+.wn-sw-badge.r b{color:var(--accent2)}
+.wn-sw-msg{position:absolute;top:56px;transform:translateX(-50%);z-index:11;max-width:340px;background:rgba(20,26,33,.92);
+  border:1px solid var(--accent2);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--text);line-height:1.45;pointer-events:none}
+/* forecast panel: the init / time-axis summary moved to the short-term About (10-19); the box only carries the no-data message */
+.wn-info:empty{display:none}
+#modal-help .help-scope{font-weight:500;color:var(--muted)}
+/* swipe comparison: show / hide the reanalysis and the station dots separately (10-19), grouped under the checkbox */
+.wn-obs{margin:0 0 4px 7px;padding-left:14px;border-left:2px solid var(--line)}
+.wn-obs .wn-row{margin:4px 0}
+/* time bar: the time label opens a datetime-local box (10-19) */
+.wn-tb-top b.wn-time-btn{cursor:pointer;padding:1px 4px;border-radius:5px;border-bottom:1px dashed var(--muted)}
+.wn-tb-top b.wn-time-btn:hover,.wn-tb-top b.wn-time-btn:focus-visible{background:rgba(45,212,191,.12);border-bottom-color:var(--accent);outline:none}
+.wn-time-in{background:var(--panel2);color:var(--text);border:1px solid var(--accent);border-radius:6px;padding:2px 6px;
+  font:inherit;font-size:13px;font-variant-numeric:tabular-nums;color-scheme:dark}
+#wn-slider{cursor:pointer;touch-action:none}
+/* short-term About: variable / observed-data tables (10-19) */
+.help-body .help-tbl{font-size:12.5px;line-height:1.55}
+.help-body .help-tbl td:first-child{white-space:nowrap}
+.help-body .help-tbl td:nth-child(2){min-width:110px}
+/* station dots over the forecast (10-19): the 'no station data' hint only when it has text */
+.wn-st-note{margin:-4px 0 6px 26px}
+.wn-st-note:empty{display:none}
+/* panel titles: the data source ("WeatherNext V3", "MSS V3") highlighted (user 2026-10-19) */
+h3 .src-brand{color:var(--accent)}
+/* subzone search: result line under the box (10-19) */
+.sz-search-hint{margin:4px 0 0;line-height:1.4}
+.sz-search-hint:empty{display:none}
+/* distance measuring (10-19): top-bar button + labels on the map */
+.btn-measure{display:inline-flex;align-items:center;gap:5px}
+.btn-measure.active{border-color:#f97316;color:#f97316;background:rgba(249,115,22,.12)}
+.ms-label{background:#fff;color:#111827;border:1.5px solid #f97316;border-radius:6px;padding:1px 6px;font:600 11.5px/1.5 Inter,'Segoe UI',sans-serif;
+  white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.28);pointer-events:none}
+.ms-label.live{border-style:dashed;opacity:.9}
+.ms-label.final{pointer-events:auto;display:flex;align-items:center;gap:6px;background:#f97316;color:#fff}
+.ms-label .ms-x{border:none;background:rgba(255,255,255,.25);color:#fff;border-radius:4px;width:17px;height:17px;padding:0;line-height:1;cursor:pointer;font-size:13px}
+.ms-label .ms-x:hover{background:rgba(255,255,255,.45)}
+/* MSS V3 before downscaling panel (10-19): controls dimmed while its switch is off */
+#mr-panel .mr-off{opacity:.55}
+#mr-panel .seg.sm{margin-top:4px}
+#mr-panel #mr-yr-row{margin-top:8px}
+#mr-yr button{white-space:nowrap}
+#mr-hint{margin-top:6px;line-height:1.45}
+/* Jurong Gateway panel: select all of its subzones (10-21) */
+#btn-sel-jurong{width:100%;margin-top:2px}
+/* Jurong Gateway only: outline the subzones outside it (10-21), indented under its checkbox */
+.jg-others{margin:-2px 0 8px 23px;font-size:12px}
+/* curves window: several subzones compared (10-24) */
+.mz-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.mz-scen{font-size:12px;color:var(--text);font-weight:600}
+.mz-tab{width:100%;border-collapse:collapse;font-size:11.5px;margin:2px 0 4px}
+.mz-tab th{color:var(--muted);font-weight:600;font-size:10.5px;text-align:right;padding:2px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
+.mz-tab th:nth-child(2){text-align:left}
+.mz-tab td{padding:3px 4px;text-align:right;color:var(--text);font-variant-numeric:tabular-nums}
+.mz-tab td.mz-nm{text-align:left;font-weight:600}
+.mz-tab td i{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle}
+.mz-tab tr[data-id]{cursor:default}
+.mz-tab tr[data-id]:hover td{background:rgba(45,212,191,.08)}
+#charts-sub .cs-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+#charts-sub .cs-note.mz-drop{color:#fbbf24}
+/* "Colour subzones by category" toggle and its legend (user 2026-10-26) */
+.cat-fill-btn{width:100%;margin:0 0 8px}
+.cat-fill-btn.active{background:rgba(45,212,191,.16);border-color:var(--accent);color:var(--accent)}
+.legend .lg-cat-g{font-size:10.5px;color:var(--muted);margin:5px 0 2px}
+.legend .lg-cat{display:flex;align-items:center;gap:7px;font-size:11.5px;line-height:1.65}
+.legend .lg-cat i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.legend .lg-cat span{margin-left:auto;padding-left:14px;color:var(--muted);font-variant-numeric:tabular-nums}
