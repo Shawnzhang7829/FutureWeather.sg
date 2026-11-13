@@ -5,7 +5,7 @@
    - EPW downloads: the figshare record (ONLINE.epw_url); while it is empty the download controls are hidden;
    - no short-term forecast tab (WeatherNext V3 data are not redistributed online; data/wn3 is not deployed). */
 (()=>{
-  const ONLINE = {"epw_url": ""};
+  const ONLINE = {"epw_url": "https://doi.org/10.6084/m9.figshare.35005411"};
   window.FW_ONLINE = ONLINE;
   try{ localStorage.setItem("mss.appMode", "lt"); }catch(e){}       // app.js restores the last tab: always long-term here
 
